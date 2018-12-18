@@ -37,7 +37,9 @@ if($request){
 	/*Add strings to array*/
 	if($res->num_rows > 0){
 		while ($row = $res->fetch_assoc()){
-			$row['MEMBERNAME'] = str_replace('"', '', $row['MEMBERNAME']); /* Remove extra quotes*/
+			if($request == "metro"){
+				$row['MEMBERNAME'] = str_replace('"', '', $row['MEMBERNAME']); /* Remove extra quotes*/
+			}
 			$row_n = array(
 			'MEMBERNAME' => $row['MEMBERNAME']
 			);
