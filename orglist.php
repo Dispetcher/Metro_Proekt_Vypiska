@@ -1,52 +1,16 @@
 <?php
 
-/* Define server and DB*/
-/*define ("DB_HOST", "u345295.mysql.masterhost.ru");
-define ("DB_LOGIN", "u345295");
-define ("DB_PASS", "unch--aropped");*/
-define ("DB_NAME", "u345295_metrotun");
-define ("DB_HOST", "localhost");
-define ("DB_LOGIN", "root");
-define ("DB_PASS", "");
+$xml = simplexml_load_file("reestr.xml");
 
-/*Connect ot DB*/
-	$con = mysqli_connect(DB_HOST, DB_LOGIN, DB_PASS, DB_NAME);
+$postdata = file_get_contents('php://input');
+$request = json_decode($postdata);
+$xml_id = (string)$request->id;
 
-/*if(!$con){
-	die("connection failure".mysqli_connect_error());
+foreach ($xml->children() as $key) {
+	$companies[] = array('MEMBERNAME' => (string)$key->MEMBERNAME);
 }
 
-/* Get ID company from front-page*/
-$request = $_POST["method"];
-
-if($request){
-
-	mysqli_set_charset($con, 'utf8');
-
-	if($request == "metro"){
-		$sql = "SELECT `MEMBERNAME`, `REESTR_NUM` FROM `es_metrotunnel_list` WHERE `AGENTSTATUSE`='Член СРО' ORDER BY `MEMBERNAME`";
-	}elseif($request == "proekt"){
-		$sql = "SELECT `MEMBERNAME`, `REESTR_NUM` FROM `es_proekttunnel_list` WHERE `AGENTSTATUSE`='Член СРО' ORDER BY `MEMBERNAME`";
-	}	
-
-	/*Query to database*/
-	$res = mysqli_query($con, $sql);
-
-	$data = array();
-
-	/*Add strings to array*/
-	if($res->num_rows > 0){
-		while ($row = $res->fetch_assoc()){
-			$row['MEMBERNAME'] = str_replace('"', '', $row['MEMBERNAME']); /* Remove extra quotes*/
-			$row_n = array(
-			'MEMBERNAME' => $row['MEMBERNAME']
-			);
-			$data[] = $row_n;
-		}
-	}
-}
-
-/*Output encoded JSON data*/
-print json_encode($data);
+print json_encode($companies);
 
 ?>
+
